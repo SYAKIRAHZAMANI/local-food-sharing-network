@@ -1,3 +1,4 @@
+-- Table to store certification details for donors and recipients
 CREATE TABLE Certification (
     CertificationID INT AUTO_INCREMENT PRIMARY KEY,
     CertificationName VARCHAR(255) NOT NULL,
@@ -5,6 +6,7 @@ CREATE TABLE Certification (
     IssuingOrganisation VARCHAR(255) NOT NULL
 );
 
+-- Table to store nutritional information of food items
 CREATE TABLE Nutritional_Info (
     NutritionalInfoID INT AUTO_INCREMENT PRIMARY KEY,
     Calories INT NOT NULL,
@@ -13,12 +15,14 @@ CREATE TABLE Nutritional_Info (
     Fat INT NOT NULL
 );
 
+-- Table to store supplier details
 CREATE TABLE Supplier (
     SupplierID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
     ContactInfo VARCHAR(255) NOT NULL
 );
 
+-- Table to store food items along with supplier and nutritional information
 CREATE TABLE Food_Item (
     FoodItemID INT AUTO_INCREMENT PRIMARY KEY,
     NutritionalInfoID INT NOT NULL,
@@ -29,12 +33,14 @@ CREATE TABLE Food_Item (
     FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
 );
 
+-- Table to store pickup locations where food donations are collected
 CREATE TABLE Pickup_Location (
     PickupLocationID INT AUTO_INCREMENT PRIMARY KEY,
     Address VARCHAR(255) NOT NULL,
     ContactInfo VARCHAR(255) NOT NULL
 );
 
+-- Table to store recipient details, including certification
 CREATE TABLE Recipient (
     RecipientID INT AUTO_INCREMENT PRIMARY KEY,
     CertificationID INT NOT NULL,
@@ -43,6 +49,7 @@ CREATE TABLE Recipient (
     FOREIGN KEY (CertificationID) REFERENCES Certification(CertificationID)
 );
 
+-- Table to store donor details, including optional certification
 CREATE TABLE Donor (
     DonorID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
@@ -51,6 +58,7 @@ CREATE TABLE Donor (
     FOREIGN KEY (CertificationID) REFERENCES Certification(CertificationID)
 );
 
+-- Table to store donation records, linking donors, food items, and pickup locations
 CREATE TABLE Donation (
     DonationID INT AUTO_INCREMENT PRIMARY KEY,
     DonorID INT NOT NULL,
@@ -63,12 +71,14 @@ CREATE TABLE Donation (
     FOREIGN KEY (PickupLocationID) REFERENCES Pickup_Location(PickupLocationID)
 );
 
+-- Table to store storage locations and their capacity
 CREATE TABLE Storage (
     StorageID INT AUTO_INCREMENT PRIMARY KEY,
     Location VARCHAR(255) NOT NULL,
     Capacity INT NOT NULL
 );
 
+-- Table to track inventory of food items in storage
 CREATE TABLE Inventory (
     InventoryID INT AUTO_INCREMENT PRIMARY KEY,
     FoodItemID INT NOT NULL,
@@ -78,6 +88,7 @@ CREATE TABLE Inventory (
     FOREIGN KEY (StorageID) REFERENCES Storage(StorageID)
 );
 
+-- Table to store feedback from recipients regarding donations
 CREATE TABLE Feedback (
     FeedbackID INT AUTO_INCREMENT PRIMARY KEY,
     DonationID INT NOT NULL,
@@ -88,6 +99,7 @@ CREATE TABLE Feedback (
     FOREIGN KEY (RecipientID) REFERENCES Recipient(RecipientID)
 );
 
+-- Table to store reports related to the food donation program
 CREATE TABLE Report (
     ReportID INT AUTO_INCREMENT PRIMARY KEY,
     Title VARCHAR(255) NOT NULL,
@@ -95,6 +107,7 @@ CREATE TABLE Report (
     Date DATE NOT NULL
 );
 
+-- Table to store impact metrics related to food donation efforts
 CREATE TABLE Impact_Metric (
     ImpactMetricID INT AUTO_INCREMENT PRIMARY KEY,
     MetricName VARCHAR(255) NOT NULL,
@@ -102,6 +115,7 @@ CREATE TABLE Impact_Metric (
     Date DATE NOT NULL
 );
 
+-- Table to store funding sources and amounts received
 CREATE TABLE Funding (
     FundingID INT AUTO_INCREMENT PRIMARY KEY,
     Source VARCHAR(255) NOT NULL,
@@ -109,24 +123,28 @@ CREATE TABLE Funding (
     Date DATE NOT NULL
 );
 
+-- Table to store information about partnerships with other organizations
 CREATE TABLE Partnership (
     PartnershipID INT AUTO_INCREMENT PRIMARY KEY,
     OrganisationName VARCHAR(255) NOT NULL,
     ContactInfo VARCHAR(255) NOT NULL
 );
 
+-- Table to store volunteer details
 CREATE TABLE Volunteer (
     VolunteerID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
     ContactInfo VARCHAR(255) NOT NULL
 );
 
+-- Table to store transportation details such as vehicle type and capacity
 CREATE TABLE Transportation (
     TransportationID INT AUTO_INCREMENT PRIMARY KEY,
     VehicleType VARCHAR(255) NOT NULL,
     Capacity INT NOT NULL
 );
 
+-- Table to store distribution event details, including volunteers and transportation
 CREATE TABLE Distribution_Event (
     DistributionEventID INT AUTO_INCREMENT PRIMARY KEY,
     VolunteerID INT NOT NULL,
@@ -138,6 +156,7 @@ CREATE TABLE Distribution_Event (
     FOREIGN KEY (TransportationID) REFERENCES Transportation(TransportationID)
 );
 
+-- Table to schedule volunteer shifts for distribution events
 CREATE TABLE Schedule (
     ScheduleID INT AUTO_INCREMENT PRIMARY KEY,
     VolunteerID INT NOT NULL,
@@ -148,6 +167,7 @@ CREATE TABLE Schedule (
     FOREIGN KEY (DistributionEventID) REFERENCES Distribution_Event(DistributionEventID)
 );
 
+-- Table to store food requests made by recipients
 CREATE TABLE Request (
     RequestID INT AUTO_INCREMENT PRIMARY KEY,
     FoodItemID INT NOT NULL,
@@ -157,6 +177,9 @@ CREATE TABLE Request (
     FOREIGN KEY (RecipientID) REFERENCES Recipient(RecipientID)
 );
 
+
+
+-- Inserting data into Certification
 INSERT INTO Certification (CertificationName, ExpiryDate, IssuingOrganisation)
 VALUES
 ('Food Safety', '2025-12-31', 'Health Department'),
@@ -165,6 +188,7 @@ VALUES
 ('Environmental Certification', '2026-09-22', 'Environment Agency'),
 ('Quality Assurance', '2025-11-05', 'Quality Assurance International');
 
+-- Inserting data into Nutritional_Info
 INSERT INTO Nutritional_Info (Calories, Protein, Carbs, Fat)
 VALUES
 (200, 10, 30, 5),
@@ -173,6 +197,7 @@ VALUES
 (180, 12, 25, 4),
 (220, 11, 32, 6);
 
+-- Inserting data into Supplier
 INSERT INTO Supplier (Name, ContactInfo)
 VALUES
 ('Supplier A', 'supA@example.com'),
@@ -181,6 +206,7 @@ VALUES
 ('Supplier D', 'supD@example.com'),
 ('Supplier E', 'supE@example.com');
 
+-- Inserting data into Food_Item
 INSERT INTO Food_Item (NutritionalInfoID, SupplierID, Name, Description)
 VALUES
 (1, 1, 'Apple', 'Fresh Red Apples'),
@@ -189,185 +215,20 @@ VALUES
 (4, 4, 'Broccoli', 'Green Broccoli'),
 (5, 5, 'Tomato', 'Juicy Tomatoes');
 
-INSERT INTO Pickup_Location (Address, ContactInfo)
-VALUES
-('123 Main St', 'main@example.com'),
-('456 Elm St', 'elm@example.com'),
-('789 Oak St', 'oak@example.com'),
-('101 Pine St', 'pine@example.com'),
-('202 Maple St', 'maple@example.com');
+-- SQL Queries for Data Retrieval
 
-INSERT INTO Recipient (CertificationID, Name, ContactInfo)
-VALUES
-(1, 'John Doe', 'john@example.com'),
-(2, 'Jane Smith', 'jane@example.com'),
-(3, 'Jim Brown', 'jim@example.com'),
-(4, 'Jake White', 'jake@example.com'),
-(5, 'Jill Black', 'jill@example.com');
+-- 1) Projection on a single column 
+SELECT Name FROM Food_Item;
 
-INSERT INTO Donor (Name, ContactInfo, CertificationID)
-VALUES
-('Alice Green', 'alice@example.com', 1),
-('Bob Blue', 'bob@example.com', 2),
-('Charlie Yellow', 'charlie@example.com', 3),
-('Diana Red', 'diana@example.com', 4),
-('Eve Orange', 'eve@example.com', 5);
+-- 2) Selection using logical operator 
+SELECT * FROM Donation WHERE Quantity > 200;
 
-INSERT INTO Donation (DonorID, Quantity, DonationDate, FoodItemID, PickupLocationID)
-VALUES
-(1, 100, '2024-07-21', 1, 1),
-(2, 150, '2024-07-22', 2, 2),
-(3, 200, '2024-07-23', 3, 3),
-(4, 250, '2024-07-24', 4, 4),
-(5, 300, '2024-07-25', 5, 5);
-
-INSERT INTO Storage (Location, Capacity)
-VALUES
-('Warehouse A', 500),
-('Warehouse B', 400),
-('Warehouse C', 300),
-('Warehouse D', 200),
-('Warehouse E', 100);
-
-INSERT INTO Inventory (FoodItemID, StorageID, Quantity)
-VALUES
-(1, 1, 50),
-(2, 2, 60),
-(3, 3, 70),
-(4, 4, 80),
-(5, 5, 90);
-
-INSERT INTO Feedback (DonationID, RecipientID, Comments, Rating)
-VALUES
-(1, 1, 'Great quality!', 5),
-(2, 2, 'Very fresh', 4),
-(3, 3, 'Good service', 4),
-(4, 4, 'Satisfied', 5),
-(5, 5, 'Excellent', 5);
-
-INSERT INTO Report (Title, Content, Date)
-VALUES
-('Monthly Report', 'Summary of activities', '2024-07-01'),
-('Quarterly Report', 'Overview of the quarter', '2024-04-01'),
-('Annual Report', 'Yearly performance', '2023-12-31'),
-('Financial Report', 'Details of finances', '2024-07-15'),
-('Impact Report', 'Impact of our work', '2024-06-20');
-
-INSERT INTO Impact_Metric (MetricName, Value, Date)
-VALUES
-('Meals Provided', 1000, '2024-07-01'),
-('Volunteers Engaged', 50, '2024-07-01'),
-('Donations Received', 500, '2024-07-01'),
-('Events Held', 20, '2024-07-01'),
-('Families Helped', 200, '2024-07-01');
-
-INSERT INTO Funding (Source, Amount, Date)
-VALUES
-('Government Grant', 10000, '2024-01-15'),
-('Corporate Donation', 5000, '2024-02-20'),
-('Individual Donation', 2000, '2024-03-25'),
-('Fundraising Event', 3000, '2024-04-30'),
-('Non-Profit Organization', 4000, '2024-05-10');
-
-INSERT INTO Partnership (OrganisationName, ContactInfo)
-VALUES
-('Local Community Center', 'community@example.com'),
-('Health Department', 'health@example.com'),
-('Organic Council', 'organic@example.com'),
-('Food Hygiene Bureau', 'hygiene@example.com'),
-('Environment Agency', 'environment@example.com');
-
-INSERT INTO Volunteer (Name, ContactInfo)
-VALUES
-('Volunteer One', 'vol1@example.com'),
-('Volunteer Two', 'vol2@example.com'),
-('Volunteer Three', 'vol3@example.com'),
-('Volunteer Four', 'vol4@example.com'),
-('Volunteer Five', 'vol5@example.com');
-
-INSERT INTO Transportation (VehicleType, Capacity)
-VALUES
-('Van', 100),
-('Truck', 200),
-('Car', 50),
-('Bike', 10),
-('Bus', 300);
-
-INSERT INTO Distribution_Event (VolunteerID, TransportationID, Date, Time, Location)
-VALUES
-(1, 1, '2024-07-01', '10:00:00', 'Park A'),
-(2, 2, '2024-07-02', '11:00:00', 'Park B'),
-(3, 3, '2024-07-03', '12:00:00', 'Park C'),
-(4, 4, '2024-07-04', '13:00:00', 'Park D'),
-(5, 5, '2024-07-05', '14:00:00', 'Park E');
-
-INSERT INTO Schedule (VolunteerID, DistributionEventID, Date, Time)
-VALUES
-(1, 1, '2024-07-01', '09:00:00'),
-(2, 2, '2024-07-02', '10:00:00'),
-(3, 3, '2024-07-03', '11:00:00'),
-(4, 4, '2024-07-04', '12:00:00'),
-(5, 5, '2024-07-05', '13:00:00');
-
-INSERT INTO Request (FoodItemID, RecipientID, Quantity)
-VALUES
-(1, 1, 20),
-(2, 2, 30),
-(3, 3, 40),
-(4, 4, 50),
-(5, 5, 60);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1) Projection on a single column 
-
-SELECT Name FROM food_item;
-
-2) Selection Using Logical Operator 
-
-SELECT * FROM donation WHERE quantity > 200;
-
-3) Retrieve All Food Items with SuppliersÕ Name 
-
+-- 3) Retrieve all food items with suppliers' names 
 SELECT f.Name AS FoodItemName, s.Name AS SupplierName 
 FROM Food_Item f 
-JOIN Supplier s ON f.supplierID = s.supplierID;
+JOIN Supplier s ON f.SupplierID = s.SupplierID;
 
-4) Find All Donations Made by a Specific Donor
-
+-- 4) Find all donations made by a specific donor
 SELECT d.Quantity, d.DonationDate, f.Name AS FoodItemName, p.Address
 FROM Donation d
 JOIN Donor dn ON d.DonorID = dn.DonorID
@@ -375,99 +236,38 @@ JOIN Food_Item f ON d.FoodItemID = f.FoodItemID
 JOIN Pickup_Location p ON d.PickupLocationID = p.PickupLocationID
 WHERE dn.Name = 'Alice Green';
 
-5) List All Recipients and Their Certifications
-
+-- 5) List all recipients and their certifications
 SELECT r.Name AS RecipientName, c.CertificationName
 FROM Recipient r
 JOIN Certification c ON r.CertificationID = c.CertificationID;
 
-6) Get The Total Number of Meals Provided
-
+-- 6) Get the total number of meals provided
 SELECT Value FROM Impact_Metric WHERE MetricName = 'Meals Provided';
 
-7) Find All Food Items with Their Nutritional Information
-
+-- 7) Find all food items with their nutritional information
 SELECT f.Name AS FoodItemName, n.Calories, n.Protein, n.Carbs, n.Fat
 FROM Food_Item f
 JOIN Nutritional_Info n ON f.NutritionalInfoID = n.NutritionalInfoID;
 
-8) List All Feedback for A Specific Donation
-
+-- 8) List all feedback for a specific donation
 SELECT f.Comments, f.Rating, r.Name AS RecipientName
 FROM Feedback f
 JOIN Recipient r ON f.RecipientID = r.RecipientID
 WHERE f.DonationID = 1;
 
-
-9) Get All Storage Locations and Their Capacities
-
+-- 9) Get all storage locations and their capacities
 SELECT Location, Capacity FROM Storage;
 
-10) Find All Food Items Stored in a Specific Warehouse
-
+-- 10) Find all food items stored in a specific warehouse
 SELECT f.Name AS FoodItemName, i.Quantity
 FROM Inventory i
 JOIN Food_Item f ON i.FoodItemID = f.FoodItemID
 JOIN Storage s ON i.StorageID = s.StorageID
 WHERE s.Location = 'Warehouse A';
 
-11)  Retrieve The Schedule of A Specific Volunteer
-
+-- 11) Retrieve the schedule of a specific volunteer
 SELECT e.Date, e.Time, e.Location
 FROM Schedule s
 JOIN Distribution_Event e ON s.DistributionEventID = e.DistributionEventID
 JOIN Volunteer v ON s.VolunteerID = v.VolunteerID
 WHERE v.Name = 'Volunteer One';
-
-12)  Find All Requests Made by A Specific Recipient
-
-SELECT r.Quantity, f.Name AS FoodItemName
-FROM Request r
-JOIN Food_Item f ON r.FoodItemID = f.FoodItemID
-JOIN Recipient rc ON r.RecipientID = rc.RecipientID
-WHERE rc.Name = 'John Doe'
-
-
-13) List All Distributions Events with Their Volunteers and Transportation Details  
-
-SELECT e.Date, e.Time, e.Location, v.Name AS VolunteerName, t.VehicleType
-FROM Distribution_Event e
-JOIN Volunteer v ON e.VolunteerID = v.VolunteerID
-JOIN Transportation t ON e.TransportationID = t.TransportationID;
-
-14)  Get The Latest Report with its Content
-
-SELECT Title, Content, Date
-FROM Report
-ORDER BY Date DESC
-LIMIT 1;
-
-
-
-
-
-15) Retrieve All Funding Sources and Their Amounts
-
-SELECT Source, Amount, Date FROM Funding;
-
-16) Pattern Matching 
-
-SELECT * FROM Supplier WHERE ContactInfo LIKE '%example.com';
-
-17) Aggregation Function
-
-SELECT SUM(Quantity) AS TotalDonations FROM Donation;
-
-18) Simple Update
-
-UPDATE Storage SET Capacity = 600 WHERE Location = 'Warehouse A';
-
-19) Simple Delete 
-
-DELETE FROM Feedback WHERE RecipientID = (SELECT RecipientID
-FROM Recipient
-WHERE Name = 'John Doe');
-
-
-
-
